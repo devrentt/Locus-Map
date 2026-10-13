@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import Splash from './pages/Splash';
 import Login from './pages/Login';
 import Places from './pages/Places';
@@ -8,10 +8,43 @@ import VenueMap from './pages/VenueMap';
 import Profile from './pages/Profile';
 import SearchMap from './pages/SearchMap';
 import Editor from './pages/Editor';
+import { supabase } from './lib/supabase';
 
 // Routes that use position:fixed fullscreen — must NOT have transform on parent
 // because transform creates a new containing block that traps fixed children.
 const FULLSCREEN_ROUTES = ['/search', '/editor'];
+
+function AdminRoute() {
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    async function checkAdmin() {
+      if (!supabase) {
+        setStatus('denied');
+        return;
+      }
+
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        setStatus('denied');
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userData.user.id)
+        .single();
+
+      setStatus(profile?.role === 'admin' ? 'allowed' : 'denied');
+    }
+
+    checkAdmin();
+  }, []);
+
+  if (status === 'loading') return <div className="page">Checking access...</div>;
+  return status === 'allowed' ? <Editor /> : <Navigate to="/login" replace />;
+}
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -32,7 +65,7 @@ function AnimatedRoutes() {
     isFullscreen ? (
       <Routes location={location} key={location.pathname}>
         <Route path="/search"  element={<SearchMap />} />
-        <Route path="/editor"  element={<Editor />} />
+        <Route path="/editor"  element={<AdminRoute />} />
       </Routes>
     ) : (
       <div ref={containerRef} className="route-wrapper">
