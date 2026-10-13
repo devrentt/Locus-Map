@@ -1,0 +1,311 @@
+:root {
+  --bg-color: #121212;
+  --bg-card: #1E1E1E;
+  --accent: #4A90E2;
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --route-color: #F5A623;
+  --border-radius-pill: 9999px;
+  --border-radius-card: 16px;
+  --page-max-width: 600px;
+  --page-padding: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App shell ── */
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+/* ── Common UI Elements ── */
+button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-pill);
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  touch-action: manipulation;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  opacity: 0.8;
+  transform: scale(0.97);
+}
+
+button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+input, select {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid #333;
+  border-radius: var(--border-radius-pill);
+  padding: 12px 20px;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  /* Prevent iOS zoom on focus */
+  font-size: max(16px, 1rem);
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+}
+
+.node-search-row {
+  display: flex;
+  gap: 10px;
+}
+
+.node-search {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.node-search label {
+  display: block;
+  margin: 0 0 6px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.node-search input {
+  width: 100%;
+}
+
+.node-search-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 4px;
+  padding: 4px;
+  background: var(--bg-card);
+  border: 1px solid #444;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.node-search-option {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.node-search-option:hover {
+  background: rgba(74, 144, 226, 0.18);
+  opacity: 1;
+}
+
+.node-search-empty {
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .venue-map-header {
+    padding: 12px !important;
+  }
+
+  .venue-map-header h2 {
+    margin-bottom: 10px !important;
+    font-size: 16px !important;
+  }
+
+  .venue-map-back,
+  .venue-map-reset {
+    padding: 6px 12px !important;
+    font-size: 14px;
+  }
+
+  .venue-map-back {
+    margin-bottom: 10px !important;
+  }
+
+  .venue-map-reset {
+    margin-top: 8px !important;
+  }
+
+  .node-search-row {
+    flex-direction: column;
+  }
+
+  .node-search label {
+    margin-bottom: 4px;
+  }
+
+  .node-search input {
+    padding: 10px 14px;
+  }
+
+  .directions-panel {
+    max-height: 22vh;
+    padding: 12px !important;
+  }
+
+  .directions-panel h3 {
+    margin-bottom: 6px !important;
+    font-size: 16px;
+  }
+
+  .directions-panel li {
+    margin-bottom: 4px !important;
+    font-size: 13px;
+  }
+}
+
+/* ── Page wrappers ── */
+.page {
+  padding: var(--page-padding);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.page h1 {
+  font-size: clamp(20px, 5vw, 26px);
+  margin-bottom: 20px;
+}
+
+/* Tablet / desktop: give pages a bit more breathing room */
+@media (min-width: 768px) {
+  .page {
+    padding: 32px;
+  }
+}
+
+/* ── Full-screen page (map view) — always covers full viewport ── */
+.page-fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh; /* iOS safe */
+  z-index: 500;
+  overflow: hidden;
+}
+
+.venue-map-canvas {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.venue-map-svg {
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.venue-map-svg:active {
+  cursor: grabbing;
+}
+
+.venue-map-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.venue-map-controls button {
+  min-width: 42px;
+  min-height: 42px;
+  padding: 8px 12px;
+  background: rgba(30, 30, 30, 0.92);
+  border: 1px solid #555;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+.venue-map-controls button:last-child {
+  font-size: 13px;
+}
+
+.directions-panel {
+  flex: 0 0 auto;
+  max-height: 32vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ── Global Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scalePop {
+  0%   { opacity: 0; transform: scale(0.85); }
+  70%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Page enter animation applied via AnimatedRoutes wrapper */
+.route-wrapper {
+  animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  width: 100%;
+}
